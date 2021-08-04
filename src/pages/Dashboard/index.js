@@ -6,11 +6,11 @@ import axios from 'axios'
 const apiURL = ['https://game-api.skymavis.com/game-api/clients/', '/items/1']
 
 const roninAddress = [
-  { add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5', user: 'pkt' },
-  { add: '0x684bcca125640a5aeaa82d4710987e0591be1434', user: 'jk' },
-  { add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c', user: 'pl' },
-  { add: '0xe2be035e84050275439592b1da5f4909f2c89854', user: 'jkb' },
-  { add: '0xe62f97068f587cae939b65865d22fda9d8a68d9f', user: 'pls' },
+  { add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5', user: 'pkt', rate: 1 },
+  { add: '0x684bcca125640a5aeaa82d4710987e0591be1434', user: 'jk', rate: 1 },
+  { add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c', user: 'pl', rate: 0.5 },
+  { add: '0xe2be035e84050275439592b1da5f4909f2c89854', user: 'jkb', rate: 0.5 },
+  { add: '0xe62f97068f587cae939b65865d22fda9d8a68d9f', user: 'pls', rate: 0.5 },
 ]
 
 const Dashboard = ({}) => {
@@ -30,8 +30,8 @@ const Dashboard = ({}) => {
 
       res.forEach((r, i) => {
         const { data } = r
-        roninAddress[i].total = data.total
-        acc += data.total
+        roninAddress[i].total = data.total 
+        acc += data.total * roninAddress[i].rate
       })
 
       setTotalSlp(acc)
@@ -54,11 +54,11 @@ const Dashboard = ({}) => {
           <ul>
             {finalResult.map((r, i) => (
               <li key={`list-${i}`}>
-                <strong>{r.user}:</strong> {r.total} slp
+                <strong>{r.user}:</strong> {r.total} slp ({r.total * r.rate} (mgr) | {r.total * (1 - r.rate)} (sch))
               </li>
             ))}
           </ul>
-          <div><strong>Total:</strong> {totalSlp} slp</div>
+          <div><strong>Total (manager):</strong> {totalSlp} slp</div>
         </React.Fragment>
       )}
 

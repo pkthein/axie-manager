@@ -2,8 +2,7 @@ const express   = require('express');
 const httpProxy = require('http-proxy');
 // const mongoose  = require('mongoose');
 const app       = express();
-// const port      = process.env.PORT || 80;
-const port      = process.env.PORT || 3001;
+const port      = process.env.PORT || 80;
 
 const apiProxy = httpProxy.createProxyServer();
 
