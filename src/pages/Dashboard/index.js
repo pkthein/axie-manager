@@ -44,25 +44,114 @@ const Dashboard = ({}) => {
   }, [])
 
   return (
-    <div>
-      <br />
-      <h4>Dashboard</h4>
-      <br />
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div
+        className="card"
+        style={{ maxWidth: 1024, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '5vh' }}
+      >
+        <h4 className="mt-2">
+          Dashboard  
+        </h4>
+        <button
+          type="button"
+          className="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+          style={{ borderRadius: '50%' }}
+        >
+          +
+        </button>
+        <br />
 
-      {finalResult.length && (
-        <React.Fragment>
-          <ul>
-            {finalResult.map((r, i) => (
-              <li key={`list-${i}`}>
-                <strong>{r.user}:</strong> {r.total} slp ({r.total * r.rate} (mgr) | {r.total * (1 - r.rate)} (sch))
-              </li>
-            ))}
-          </ul>
-          <div><strong>Total (manager):</strong> {totalSlp} slp</div>
-        </React.Fragment>
-      )}
+        <div><strong>Total (manager):</strong> {totalSlp} slp</div>
 
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">SLP (total)</th>
+              <th scope="col">Delta [slp]</th>
+              <th scope="col">Manager [slp]</th>
+              <th scope="col">Scholar [slp]</th>
+              <th scope="col">Rate [m|s]</th>
+            </tr>
+          </thead>
+          <tbody>
+            {finalResult.length ? finalResult.map((r, i) => (
+              <tr key={`row-${i}`}>
+                <th scope="row"><strong>{r.user}</strong></th>
+                <td>{r.total}</td>
+                <td>N/A</td>
+                <td>{r.total * r.rate}</td>
+                <td>{r.total * (1 - r.rate)}</td>
+                <td>{r.rate}</td>
+              </tr>
+            )) : (
+              <tr>
+                <td colSpan={100} style={{ textAlign: 'center' }}>
+                  No Data
+                  <br/>
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+                  >
+                    Add scholar
+                  </button>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
+        <div
+          className="modal fade"
+          id="staticBackdrop"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabIndex="-1"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5
+                  className="modal-title"
+                  id="staticBackdropLabel"
+                >
+                  Modal title
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                />
+              </div>
+              <div className="modal-body">
+                ...
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                >
+                  Understood
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

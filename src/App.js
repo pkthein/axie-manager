@@ -25,7 +25,7 @@ const App = ({}) => {
       )}
 
       <br />
-      <h2>Axie Manager v-0.0.1</h2>
+      <h2 style={{ textAlign: 'center' }}>Axie Manager v-0.0.1</h2>
 
       <Switch>
         {/* <Route path="/signup" component={ Signup } /> */}
