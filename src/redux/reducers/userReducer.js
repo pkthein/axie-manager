@@ -2,7 +2,7 @@
 const INITIAL_STATE = {
   email: '',
   username: '',
-  isLoggedIn: false,
+  isLoggedIn: true,
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
