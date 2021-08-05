@@ -18,6 +18,7 @@ const Dashboard = ({}) => {
 
   const [totalSlp, setTotalSlp] = useState(0)
   const [finalResult, setFinalResult] = useState([])
+  const [ccToUSD, setCcToUSD] = useState({})
   
   useEffect(async () => {
     try {
@@ -36,6 +37,10 @@ const Dashboard = ({}) => {
 
       setTotalSlp(acc)
       setFinalResult([ ...roninAddress ])
+
+      const coinPrices = await axios.get('/api/coins/all')
+
+      setCcToUSD({ ...coinPrices.data.response.data })
     } catch (e) {
       console.error(e)
     }
@@ -50,7 +55,7 @@ const Dashboard = ({}) => {
         style={{ maxWidth: 1024, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '5vh' }}
       >
         <h4 className="mt-2">
-          Dashboard  
+          Dashboard
         </h4>
         <button
           type="button"
@@ -63,7 +68,17 @@ const Dashboard = ({}) => {
         </button>
         <br />
 
-        <div><strong>Total (manager):</strong> {totalSlp} slp</div>
+        <div><strong>ETH:</strong> ${ccToUSD.eth}</div>
+        <div><strong>SLP:</strong> ${ccToUSD.slp}</div>
+        <br />
+
+        <div>
+          <strong>Total (manager):</strong>
+          &nbsp;{totalSlp} slp |
+          &nbsp;${Math.round(totalSlp * ccToUSD.slp * 100) / 100} |
+          &nbsp;{Math.round(totalSlp * ccToUSD.slp / ccToUSD.eth * 100000000) / 100000000} eth
+        </div>
+        <br />
 
         <table className="table table-striped">
           <thead>

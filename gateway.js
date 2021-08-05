@@ -1,8 +1,7 @@
-const express   = require('express');
+const express = require('express');
 const httpProxy = require('http-proxy');
-// const mongoose  = require('mongoose');
-const app       = express();
-const port      = process.env.PORT || 80;
+const app = express();
+const port = process.env.PORT || 80;
 
 const apiProxy = httpProxy.createProxyServer();
 
@@ -19,12 +18,12 @@ apiProxy.on('error', (err, req, res) => {
 //   });
 // });
 
-// app.all("/api/notes/*", (req, res) => {
-//   // notes server
-//   apiProxy.web(req, res, {
-//     target: 'http://localhost:5000',
-//   });
-// });
+app.all("/api/coins/*", (req, res) => {
+  // coins server
+  apiProxy.web(req, res, {
+    target: 'http://localhost:5000',
+  });
+});
 
 app.all("*", (req, res) => {
   // front end server / react
