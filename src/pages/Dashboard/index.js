@@ -14,7 +14,7 @@ const Dashboard = ({}) => {
   
   useEffect(async () => {
     try {
-      const roninAddress = await (await axios.get('/api/daily')).data.response.data.wallets
+      const roninAddress = await (await axios.get('/api/daily/')).data.response.data.wallets
 
       const p = roninAddress.map(address => {
         return axios.get(`${apiURL[0] + address.add + apiURL[1]}`)
