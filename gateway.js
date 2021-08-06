@@ -18,6 +18,13 @@ apiProxy.on('error', (err, req, res) => {
 //   });
 // });
 
+app.all("/api/daily/*", (req, res) => {
+  // coins server
+  apiProxy.web(req, res, {
+    target: 'http://localhost:3000',
+  });
+});
+
 app.all("/api/coins/*", (req, res) => {
   // coins server
   apiProxy.web(req, res, {

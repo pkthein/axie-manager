@@ -5,14 +5,6 @@ import axios from 'axios'
 
 const apiURL = ['https://game-api.skymavis.com/game-api/clients/', '/items/1']
 
-const roninAddress = [
-  { add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5', user: 'pkt', rate: 1 },
-  { add: '0x684bcca125640a5aeaa82d4710987e0591be1434', user: 'jk', rate: 1 },
-  { add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c', user: 'pl', rate: 0.5 },
-  { add: '0xe2be035e84050275439592b1da5f4909f2c89854', user: 'jkb', rate: 0.5 },
-  { add: '0xe62f97068f587cae939b65865d22fda9d8a68d9f', user: 'pls', rate: 0.5 },
-]
-
 const Dashboard = ({}) => {
   // const dispatch = useDispatch()
 
@@ -22,6 +14,8 @@ const Dashboard = ({}) => {
   
   useEffect(async () => {
     try {
+      const roninAddress = await (await axios.get('/api/daily')).data.response.data.wallets
+
       const p = roninAddress.map(address => {
         return axios.get(`${apiURL[0] + address.add + apiURL[1]}`)
       })
@@ -85,7 +79,7 @@ const Dashboard = ({}) => {
             <tr>
               <th scope="col">Name</th>
               <th scope="col">SLP (total)</th>
-              <th scope="col">Delta [slp]</th>
+              <th scope="col">Daily [slp]</th>
               <th scope="col">Manager [slp]</th>
               <th scope="col">Scholar [slp]</th>
               <th scope="col">Rate [m|s]</th>
@@ -95,11 +89,11 @@ const Dashboard = ({}) => {
             {finalResult.length ? finalResult.map((r, i) => (
               <tr key={`row-${i}`}>
                 <th scope="row"><strong>{r.user}</strong></th>
-                <td>{r.total}</td>
-                <td>N/A</td>
-                <td>{r.total * r.rate}</td>
-                <td>{r.total * (1 - r.rate)}</td>
-                <td>{r.rate}</td>
+                <td style={{ textAlign: 'right' }}>{r.total}</td>
+                <td style={{ textAlign: 'right' }}>{r.total - r.start}</td>
+                <td style={{ textAlign: 'right' }}>{r.total * r.rate}</td>
+                <td style={{ textAlign: 'right' }}>{r.total * (1 - r.rate)}</td>
+                <td style={{ textAlign: 'center' }}>{r.rate}</td>
               </tr>
             )) : (
               <tr>
