@@ -24,8 +24,30 @@ const App = ({}) => {
         <Redirect to="/dashboard" />
       )}
 
-      <br />
-      <h2 style={{ textAlign: 'center' }}>Axie Manager v-0.0.1</h2>
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          width: '100%',
+          zIndex: 100,
+          backgroundColor: 'white',
+          padding: '12px 16px',
+          boxShadow: '0 2px 2px -2px gray',
+        }}
+      >
+        <div
+          style={{
+            textAlign: 'center',
+            lineHeight: '1.2',
+            // marginBottom: '.5rem',
+          }}
+        >
+          <div style={{ fontSize: 'calc(1.325rem + .9vw)', fontWeight: 500 }}>
+            Axie Manager
+          </div>
+          <sub style={{ bottom: '0' }}>v-0.0.2</sub>
+        </div>
+      </div>
 
       <Switch>
         {/* <Route path="/signup" component={ Signup } /> */}

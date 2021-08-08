@@ -46,7 +46,15 @@ const Dashboard = ({}) => {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div
         className="card"
-        style={{ maxWidth: 1024, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '5vh' }}
+        style={{
+          maxWidth: 1024,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent:
+          'center',
+          marginTop: '5vh',
+          padding: 8,
+        }}
       >
         <h4 className="mt-2">
           Dashboard
@@ -70,18 +78,20 @@ const Dashboard = ({}) => {
           <strong>Total (manager):</strong>
           &nbsp;{totalSlp} slp |
           &nbsp;${Math.round(totalSlp * ccToUSD.slp * 100) / 100} |
-          &nbsp;{Math.round(totalSlp * ccToUSD.slp / ccToUSD.eth * 100000000) / 100000000} eth
+          {/* &nbsp;{Math.round(totalSlp * ccToUSD.slp / ccToUSD.eth * 100000000) / 100000000} eth */}
+          &nbsp;{Math.round(totalSlp * ccToUSD.slp / ccToUSD.eth * 100000) / 100000} eth
         </div>
         <br />
 
         <table className="table table-striped">
+          <caption>Note: All units are in SLP</caption>
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">SLP (total)</th>
-              <th scope="col">Daily [slp]</th>
-              <th scope="col">Manager [slp]</th>
-              <th scope="col">Scholar [slp]</th>
+              <th scope="col">Total</th>
+              <th scope="col">Daily</th>
+              <th scope="col">Manager</th>
+              <th scope="col">Scholar</th>
               <th scope="col">Rate [m|s]</th>
             </tr>
           </thead>
@@ -130,7 +140,8 @@ const Dashboard = ({}) => {
                   className="modal-title"
                   id="staticBackdropLabel"
                 >
-                  Modal title
+                  {/* Modal title */}
+                  Add scholar
                 </h5>
                 <button
                   type="button"
@@ -140,7 +151,7 @@ const Dashboard = ({}) => {
                 />
               </div>
               <div className="modal-body">
-                ...
+                Coming soon...
               </div>
               <div className="modal-footer">
                 <button
@@ -154,7 +165,8 @@ const Dashboard = ({}) => {
                   type="button"
                   className="btn btn-primary"
                 >
-                  Understood
+                  {/* Understood */}
+                  Submit
                 </button>
               </div>
             </div>
