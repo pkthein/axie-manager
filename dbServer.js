@@ -21,9 +21,9 @@ app.use((req, res, next) => {
   put the mariadb cred
 */
 const pool = mariadb.createPool({
-    host: 'mydb.com', 
-    user:'myUser', 
-    password: 'myPassword',
+    host: 'localhost', 
+    user:'root', 
+    password: '',
     connectionLimit: 5
 });
 
