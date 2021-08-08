@@ -26,11 +26,12 @@ app.use((req, res, next) => {
 const apiURL = ['https://game-api.skymavis.com/game-api/clients/', '/items/1']
 
 const roninAddress = [
-  { add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5', user: 'pkt', rate: 1, start: 2766, total: 0 },
-  { add: '0x684bcca125640a5aeaa82d4710987e0591be1434', user: 'jk', rate: 1, start: 3997, total: 0 },
-  { add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c', user: 'pl', rate: 0.5, start: 2495, total: 0 },
-  { add: '0xe2be035e84050275439592b1da5f4909f2c89854', user: 'jkb', rate: 0.5, start: 1796, total: 0 },
-  { add: '0xe62f97068f587cae939b65865d22fda9d8a68d9f', user: 'pls', rate: 0.5, start: 590, total: 0 },
+  { add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5', user: 'pkt', rate: 1, start: 0, total: 0 },
+  { add: '0x684bcca125640a5aeaa82d4710987e0591be1434', user: 'jk', rate: 1, start: 0, total: 0 },
+  { add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c', user: 'pl', rate: 0.5, start: 0, total: 0 },
+  { add: '0xe2be035e84050275439592b1da5f4909f2c89854', user: 'jkb', rate: 0.5, start: 0, total: 0 },
+  { add: '0xe62f97068f587cae939b65865d22fda9d8a68d9f', user: 'pls', rate: 0.5, start: 890, total: 0 },
+  { add: '0x6a8f0e45373da828468deb009e35beb26ee005fa', user: 'mamaPio', rate: 0.5, start: 0, total: 0 },
 ]
 
 const data = {}
