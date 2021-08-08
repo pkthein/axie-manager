@@ -22,9 +22,10 @@ app.use((req, res, next) => {
 */
 const pool = mariadb.createPool({
     host: 'localhost', 
-    user:'root', 
-    password: '',
-    connectionLimit: 5
+    user:'newuser', 
+    password: 'password',
+    connectionLimit: 5,
+    database:'axie'
 });
 
 app.get('/api/db/test', async (req, res, next) => {
