@@ -50,10 +50,12 @@ const Dashboard = ({}) => {
           maxWidth: 1024,
           display: 'flex',
           alignItems: 'center',
-          justifyContent:
-          'center',
+          justifyContent: 'center',
           marginTop: '5vh',
+          marginLeft: 8,
+          marginRight: 8,
           padding: 8,
+          minWidth: 391,
         }}
       >
         <h4 className="mt-2">
@@ -84,7 +86,7 @@ const Dashboard = ({}) => {
         <br />
 
         <table className="table table-striped">
-          <caption>Note: All units are in SLP</caption>
+          <caption>Note: All units are in SLP except for 'Split' column</caption>
           <thead>
             <tr>
               <th scope="col">Name</th>
@@ -92,7 +94,7 @@ const Dashboard = ({}) => {
               <th scope="col">Daily</th>
               <th scope="col">Manager</th>
               <th scope="col">Scholar</th>
-              <th scope="col">Rate [m|s]</th>
+              <th scope="col">Split</th>
             </tr>
           </thead>
           <tbody>
@@ -103,7 +105,7 @@ const Dashboard = ({}) => {
                 <td style={{ textAlign: 'right' }}>{r.total - r.start}</td>
                 <td style={{ textAlign: 'right' }}>{r.total * r.rate}</td>
                 <td style={{ textAlign: 'right' }}>{r.total * (1 - r.rate)}</td>
-                <td style={{ textAlign: 'center' }}>{r.rate}</td>
+                <td style={{ textAlign: 'center' }}>{r.rate * 100}%</td>
               </tr>
             )) : (
               <tr>
