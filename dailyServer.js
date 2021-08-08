@@ -31,7 +31,7 @@ const roninAddress = [
   { add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c', user: 'pl', rate: 0.5, start: 0, total: 0 },
   { add: '0xe2be035e84050275439592b1da5f4909f2c89854', user: 'jkb', rate: 0.5, start: 0, total: 0 },
   { add: '0xe62f97068f587cae939b65865d22fda9d8a68d9f', user: 'pls', rate: 0.5, start: 890, total: 0 },
-  { add: '0x6a8f0e45373da828468deb009e35beb26ee005fa', user: 'mamaPio', rate: 0.5, start: 0, total: 0 },
+  { add: '0x6a8f0e45373da828468deb009e35beb26ee005fa', user: 'mpt', rate: 0.5, start: 0, total: 0 },
 ]
 
 const data = {}
@@ -40,7 +40,9 @@ const getAddresses = async () => {
   try {
     const timeOfInterest = new Date()
 
-    if (timeOfInterest.getHours() > 17 && timeOfInterest.getMinutes() > 0 && timeOfInterest.getMinutes() <= 5) {
+    // UTC to PST is -7 or -8
+    // TODO: fix for Day Light Savings
+    if (timeOfInterest.getHours() === 24 && timeOfInterest.getMinutes() > 0 && timeOfInterest.getMinutes() <= 5) {
       const p = roninAddress.map(address => {
         return axios.get(`${apiURL[0] + address.add + apiURL[1]}`)
       })
