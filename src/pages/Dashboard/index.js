@@ -65,7 +65,7 @@ const Dashboard = ({}) => {
           marginLeft: 8,
           marginRight: 8,
           padding: 8,
-          minWidth: 391,
+          minWidth: 431,
         }}
       >
         <h4 className="mt-2">
