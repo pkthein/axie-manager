@@ -120,7 +120,7 @@ const Dashboard = ({}) => {
             checked={baseUnit === BASE_UNIT_OPTIONS_CONSTANTS.USD}
             onClick={() => {
               setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.USD)
-              setBaseUnitNumeric(ccToUSD.slp)
+              setBaseUnitNumeric(Math.round(ccToUSD.slp * 100) / 100)
             }}
           />
           <label class="btn btn-outline-primary" for="val-usd">USD</label>
@@ -134,7 +134,7 @@ const Dashboard = ({}) => {
             checked={baseUnit === BASE_UNIT_OPTIONS_CONSTANTS.ETH}
             onClick={() => {
               setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.ETH)
-              setBaseUnitNumeric(ccToUSD.slp / ccToUSD.eth)
+              setBaseUnitNumeric(Math.round(ccToUSD.slp / ccToUSD.eth * 100000) / 100000)
             }}
           />
           <label class="btn btn-outline-primary" for="val-eth">ETH</label>
@@ -144,12 +144,12 @@ const Dashboard = ({}) => {
           <caption>Note: All units are in {baseUnit.toUpperCase()} except for 'Split' column</caption>
           <thead>
             <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Total</th>
-              <th scope="col">Daily</th>
-              <th scope="col">Manager</th>
-              <th scope="col">Scholar</th>
-              <th scope="col">Split</th>
+              <th style={{ textAlign: 'center' }} scope="col">Name</th>
+              <th style={{ textAlign: 'center' }} scope="col">Total</th>
+              <th style={{ textAlign: 'center' }} scope="col">Daily</th>
+              <th style={{ textAlign: 'center' }} scope="col">Manager</th>
+              <th style={{ textAlign: 'center' }} scope="col">Scholar</th>
+              <th style={{ textAlign: 'center' }} scope="col">Split</th>
             </tr>
           </thead>
           <tbody>
