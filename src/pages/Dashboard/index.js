@@ -5,12 +5,21 @@ import axios from 'axios'
 
 const apiURL = ['https://game-api.skymavis.com/game-api/clients/', '/items/1']
 
+const BASE_UNIT_OPTIONS_CONSTANTS = {
+  SLP: 'slp',
+  USD: 'usd',
+  ETH: 'eth',
+}
+
 const Dashboard = ({}) => {
   // const dispatch = useDispatch()
 
   const [totalSlp, setTotalSlp] = useState(0)
   const [finalResult, setFinalResult] = useState([])
   const [ccToUSD, setCcToUSD] = useState({})
+
+  const [baseUnit, setBaseUnit] = useState(BASE_UNIT_OPTIONS_CONSTANTS.SLP)
+  const [baseUnitNumeric, setBaseUnitNumeric] = useState(1)
   
   useEffect(async () => {
     try {
@@ -85,6 +94,52 @@ const Dashboard = ({}) => {
         </div>
         <br />
 
+        <div class="btn-group" role="group" aria-label="Radio toggle for basic unit of table">
+          <input
+            type="radio"
+            class="btn-check"
+            name="btnradio"
+            id="val-slp"
+            autocomplete="off"
+            checked={baseUnit === BASE_UNIT_OPTIONS_CONSTANTS.SLP}
+            onClick={() => {
+              setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.SLP)
+              setBaseUnitNumeric(1)
+            }}
+          />
+          <label class="btn btn-outline-primary" for="val-slp">
+            SLP
+          </label>
+
+          <input
+            type="radio"
+            class="btn-check"
+            name="btnradio"
+            id="val-usd"
+            autocomplete="off"
+            checked={baseUnit === BASE_UNIT_OPTIONS_CONSTANTS.USD}
+            onClick={() => {
+              setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.USD)
+              setBaseUnitNumeric(ccToUSD.slp)
+            }}
+          />
+          <label class="btn btn-outline-primary" for="val-usd">USD</label>
+
+          <input
+            type="radio"
+            class="btn-check"
+            name="btnradio"
+            id="val-eth"
+            autocomplete="off"
+            checked={baseUnit === BASE_UNIT_OPTIONS_CONSTANTS.ETH}
+            onClick={() => {
+              setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.ETH)
+              setBaseUnitNumeric(ccToUSD.slp / ccToUSD.eth)
+            }}
+          />
+          <label class="btn btn-outline-primary" for="val-eth">ETH</label>
+        </div>
+
         <table className="table table-striped">
           <caption>Note: All units are in SLP except for 'Split' column</caption>
           <thead>
@@ -101,10 +156,10 @@ const Dashboard = ({}) => {
             {finalResult.length ? finalResult.map((r, i) => (
               <tr key={`row-${i}`}>
                 <th scope="row"><strong>{r.user}</strong></th>
-                <td style={{ textAlign: 'right' }}>{r.total}</td>
-                <td style={{ textAlign: 'right' }}>{r.total - r.start}</td>
-                <td style={{ textAlign: 'right' }}>{r.total * r.rate}</td>
-                <td style={{ textAlign: 'right' }}>{r.total * (1 - r.rate)}</td>
+                <td style={{ textAlign: 'right' }}>{r.total * baseUnitNumeric}</td>
+                <td style={{ textAlign: 'right' }}>{(r.total - r.start) * baseUnitNumeric}</td>
+                <td style={{ textAlign: 'right' }}>{(r.total * r.rate) * baseUnitNumeric}</td>
+                <td style={{ textAlign: 'right' }}>{(r.total * (1 - r.rate)) * baseUnitNumeric}</td>
                 <td style={{ textAlign: 'center' }}>{r.rate * 100}%</td>
               </tr>
             )) : (
