@@ -141,7 +141,7 @@ const Dashboard = ({}) => {
         </div>
 
         <table className="table table-striped">
-          <caption>Note: All units are in {baseUnit.toLowerCase()} except for 'Split' column</caption>
+          <caption>Note: All units are in {baseUnit.toUpperCase()} except for 'Split' column</caption>
           <thead>
             <tr>
               <th scope="col">Name</th>
