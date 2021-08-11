@@ -40,9 +40,8 @@ const getAddresses = async () => {
   try {
     const timeOfInterest = new Date()
 
-    // UTC to PST is -7 or -8
-    // TODO: fix for Day Light Savings
-    if (timeOfInterest.getHours() === 24 && timeOfInterest.getMinutes() > 0 && timeOfInterest.getMinutes() <= 5) {
+    // game server resets at 00:00 UTC ;]
+    if (timeOfInterest.getHours() === 0 && timeOfInterest.getMinutes() > 0 && timeOfInterest.getMinutes() <= 5) {
       const p = roninAddress.map(address => {
         return axios.get(`${apiURL[0] + address.add + apiURL[1]}`)
       })
