@@ -20,6 +20,7 @@ const Dashboard = ({}) => {
 
   const [baseUnit, setBaseUnit] = useState(BASE_UNIT_OPTIONS_CONSTANTS.SLP)
   const [baseUnitNumeric, setBaseUnitNumeric] = useState(1)
+  const [baseUnitRounder, setBaseUnitRounder] = useState(10)
   
   useEffect(async () => {
     try {
@@ -89,10 +90,8 @@ const Dashboard = ({}) => {
           <strong>Total (manager):</strong>
           &nbsp;{totalSlp} slp |
           &nbsp;${Math.round(totalSlp * ccToUSD.slp * 100) / 100} |
-          {/* &nbsp;{Math.round(totalSlp * ccToUSD.slp / ccToUSD.eth * 100000000) / 100000000} eth */}
           &nbsp;{Math.round(totalSlp * ccToUSD.slp / ccToUSD.eth * 100000) / 100000} eth
         </div>
-        <br />
 
         <div class="btn-group" role="group" aria-label="Radio toggle for basic unit of table">
           <input
@@ -105,6 +104,7 @@ const Dashboard = ({}) => {
             onClick={() => {
               setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.SLP)
               setBaseUnitNumeric(1)
+              setBaseUnitRounder(10)
             }}
           />
           <label class="btn btn-outline-primary" for="val-slp">
@@ -120,7 +120,8 @@ const Dashboard = ({}) => {
             checked={baseUnit === BASE_UNIT_OPTIONS_CONSTANTS.USD}
             onClick={() => {
               setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.USD)
-              setBaseUnitNumeric(Math.round(ccToUSD.slp * 100) / 100)
+              setBaseUnitNumeric(ccToUSD.slp)
+              setBaseUnitRounder(100)
             }}
           />
           <label class="btn btn-outline-primary" for="val-usd">USD</label>
@@ -134,7 +135,8 @@ const Dashboard = ({}) => {
             checked={baseUnit === BASE_UNIT_OPTIONS_CONSTANTS.ETH}
             onClick={() => {
               setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.ETH)
-              setBaseUnitNumeric(Math.round(ccToUSD.slp / ccToUSD.eth * 100000) / 100000)
+              setBaseUnitNumeric(ccToUSD.slp / ccToUSD.eth)
+              setBaseUnitRounder(100000)
             }}
           />
           <label class="btn btn-outline-primary" for="val-eth">ETH</label>
@@ -156,10 +158,18 @@ const Dashboard = ({}) => {
             {finalResult.length ? finalResult.map((r, i) => (
               <tr key={`row-${i}`}>
                 <th scope="row"><strong>{r.user}</strong></th>
-                <td style={{ textAlign: 'right' }}>{r.total * baseUnitNumeric}</td>
-                <td style={{ textAlign: 'right' }}>{(r.total - r.start) * baseUnitNumeric}</td>
-                <td style={{ textAlign: 'right' }}>{(r.total * r.rate) * baseUnitNumeric}</td>
-                <td style={{ textAlign: 'right' }}>{(r.total * (1 - r.rate)) * baseUnitNumeric}</td>
+                <td style={{ textAlign: 'right' }}>
+                  {Math.round(r.total * baseUnitNumeric * baseUnitRounder) / baseUnitRounder}
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  {Math.round((r.total - r.start) * baseUnitNumeric * baseUnitRounder) / baseUnitRounder}
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  {Math.round((r.total * r.rate) * baseUnitNumeric * baseUnitRounder) / baseUnitRounder}
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  {Math.round((r.total * (1 - r.rate)) * baseUnitNumeric * baseUnitRounder) / baseUnitRounder}
+                </td>
                 <td style={{ textAlign: 'center' }}>{r.rate * 100}%</td>
               </tr>
             )) : (
