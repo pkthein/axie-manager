@@ -1,15 +1,36 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 // import { useDispatch } from 'react-redux'
 import axios from 'axios'
 
-const apiURL = ['https://game-api.skymavis.com/game-api/clients/', '/items/1']
+import { StyledTableRow } from './StyledComponents'
 
 const BASE_UNIT_OPTIONS_CONSTANTS = {
   SLP: 'slp',
   USD: 'usd',
   ETH: 'eth',
 }
+
+const MODAL_OPTIONS_CONSTANTS = {
+  ADD: 'add',
+  DETAILS: 'DETAILS',
+}
+
+const WalletInformation = ({
+  add = '',
+  user = '',
+  rate = 0,
+  total = 0,
+  start = 0,
+  earnings = []
+}) => ({
+  add: String(add),
+  user: String(user),
+  rate: Number(rate),
+  total: Number(total),
+  start: Number(start),
+  earnings: earnings.map(earning => Number(earning))
+})
 
 const Dashboard = ({}) => {
   // const dispatch = useDispatch()
@@ -21,26 +42,19 @@ const Dashboard = ({}) => {
   const [baseUnit, setBaseUnit] = useState(BASE_UNIT_OPTIONS_CONSTANTS.SLP)
   const [baseUnitNumeric, setBaseUnitNumeric] = useState(1)
   const [baseUnitRounder, setBaseUnitRounder] = useState(10)
+
+  const [modalMode, setModalMode] = useState(MODAL_OPTIONS_CONSTANTS.ADD)
+  const [rowInformation, setRowInformation] = useState(WalletInformation({}))
+
+  const modalRef = useRef()
   
   useEffect(async () => {
     try {
-      const roninAddress = await (await axios.get('/api/daily/')).data.response.data.wallets
+      const apiData = await (await axios.get('/api/daily/fetch')).data.response.data
+      const { wallets, managerTotal } = apiData
 
-      const p = roninAddress.map(address => {
-        return axios.get(`${apiURL[0] + address.add + apiURL[1]}`)
-      })
-
-      const res = await Promise.all(p)
-      let acc = 0
-
-      res.forEach((r, i) => {
-        const { data } = r
-        roninAddress[i].total = data.total 
-        acc += data.total * roninAddress[i].rate
-      })
-
-      setTotalSlp(acc)
-      setFinalResult([ ...roninAddress ])
+      setTotalSlp(managerTotal)
+      setFinalResult([ ...wallets ])
 
       const coinPrices = await axios.get('/api/coins/all')
 
@@ -51,6 +65,19 @@ const Dashboard = ({}) => {
 
     return () => {}
   }, [])
+
+  console.log('testingx >>', { modalMode, rowInformation })
+
+  const renderRowInformationModal = (indexOfInterest) => {
+    console.log('testingx >> wtf?')
+    setModalMode(MODAL_OPTIONS_CONSTANTS.DETAILS)
+    setRowInformation(WalletInformation(finalResult[indexOfInterest]))
+    modalRef.current.click()
+  }
+
+  const renderAddModal = () => {
+    setModalMode(MODAL_OPTIONS_CONSTANTS.ADD)
+  }
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -77,6 +104,7 @@ const Dashboard = ({}) => {
           data-bs-toggle="modal"
           data-bs-target="#staticBackdrop"
           style={{ borderRadius: '50%' }}
+          onClick={renderAddModal}
         >
           +
         </button>
@@ -93,10 +121,10 @@ const Dashboard = ({}) => {
           &nbsp;{Math.round(totalSlp * ccToUSD.slp / ccToUSD.eth * 100000) / 100000} eth
         </div>
 
-        <div class="btn-group" role="group" aria-label="Radio toggle for basic unit of table">
+        <div className="btn-group" role="group" aria-label="Radio toggle for basic unit of table">
           <input
             type="radio"
-            class="btn-check"
+            className="btn-check"
             name="btnradio"
             id="val-slp"
             autocomplete="off"
@@ -107,13 +135,16 @@ const Dashboard = ({}) => {
               setBaseUnitRounder(10)
             }}
           />
-          <label class="btn btn-outline-primary" for="val-slp">
+          <label
+            className="btn btn-outline-primary" for="val-slp"
+            style={{ boxShadow: 'none' }}
+          >
             SLP
           </label>
 
           <input
             type="radio"
-            class="btn-check"
+            className="btn-check"
             name="btnradio"
             id="val-usd"
             autocomplete="off"
@@ -124,11 +155,16 @@ const Dashboard = ({}) => {
               setBaseUnitRounder(100)
             }}
           />
-          <label class="btn btn-outline-primary" for="val-usd">USD</label>
+          <label
+            className="btn btn-outline-primary" for="val-usd"
+            style={{ boxShadow: 'none' }}
+          >
+            USD
+          </label>
 
           <input
             type="radio"
-            class="btn-check"
+            className="btn-check"
             name="btnradio"
             id="val-eth"
             autocomplete="off"
@@ -136,10 +172,15 @@ const Dashboard = ({}) => {
             onClick={() => {
               setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.ETH)
               setBaseUnitNumeric(ccToUSD.slp / ccToUSD.eth)
-              setBaseUnitRounder(100000)
+              setBaseUnitRounder(10000)
             }}
           />
-          <label class="btn btn-outline-primary" for="val-eth">ETH</label>
+          <label
+            className="btn btn-outline-primary" for="val-eth"
+            style={{ boxShadow: 'none' }}
+          >
+            ETH
+          </label>
         </div>
 
         <table className="table table-striped">
@@ -156,7 +197,10 @@ const Dashboard = ({}) => {
           </thead>
           <tbody>
             {finalResult.length ? finalResult.map((r, i) => (
-              <tr key={`row-${i}`}>
+              <StyledTableRow
+                key={`row-${i}`}
+                onClick={() => renderRowInformationModal(i)}
+              >
                 <th scope="row"><strong>{r.user}</strong></th>
                 <td style={{ textAlign: 'right' }}>
                   {Math.round(r.total * baseUnitNumeric * baseUnitRounder) / baseUnitRounder}
@@ -171,7 +215,7 @@ const Dashboard = ({}) => {
                   {Math.round((r.total * (1 - r.rate)) * baseUnitNumeric * baseUnitRounder) / baseUnitRounder}
                 </td>
                 <td style={{ textAlign: 'center' }}>{r.rate * 100}%</td>
-              </tr>
+              </StyledTableRow>
             )) : (
               <tr>
                 <td colSpan={100} style={{ textAlign: 'center' }}>
@@ -182,6 +226,7 @@ const Dashboard = ({}) => {
                     className="btn btn-outline-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop"
+                    onClick={renderAddModal}
                   >
                     Add scholar
                   </button>
@@ -191,6 +236,16 @@ const Dashboard = ({}) => {
           </tbody>
         </table>
 
+        <button
+          ref={modalRef}
+          type="button"
+          className="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+          style={{ display: 'none' }}
+        >
+          ROW INFORMATION MODAL
+        </button>
         <div
           className="modal fade"
           id="staticBackdrop"
@@ -207,8 +262,14 @@ const Dashboard = ({}) => {
                   className="modal-title"
                   id="staticBackdropLabel"
                 >
-                  {/* Modal title */}
-                  Add scholar
+                  {console.log('testingx >>', { modalMode })}
+                  {modalMode === MODAL_OPTIONS_CONSTANTS.ADD && (
+                    <React.Fragment>Add scholar</React.Fragment>
+                  )}
+
+                  {modalMode === MODAL_OPTIONS_CONSTANTS.DETAILS && (
+                    <React.Fragment>Information on {rowInformation.user || ''}</React.Fragment>
+                  )}
                 </h5>
                 <button
                   type="button"
@@ -218,7 +279,26 @@ const Dashboard = ({}) => {
                 />
               </div>
               <div className="modal-body">
-                Coming soon...
+                {modalMode === MODAL_OPTIONS_CONSTANTS.ADD && (
+                  <React.Fragment>Coming soon...</React.Fragment>
+                )}
+
+                {modalMode === MODAL_OPTIONS_CONSTANTS.DETAILS && (
+                  <React.Fragment>
+                    <ul>
+                      <li>User: {rowInformation.user}</li>
+                      <li>Rate: {rowInformation.rate}</li>
+                      <li>Total: {rowInformation.total}</li>
+                      <li>
+                        History: [
+                        {rowInformation?.earnings.map((earning, earningIndex) => {
+                          return earningIndex === rowInformation.earnings.length - 1 ? earning : `${earning}, `
+                        })}
+                        ]
+                      </li>
+                    </ul>
+                  </React.Fragment>
+                )}
               </div>
               <div className="modal-footer">
                 <button
@@ -228,13 +308,15 @@ const Dashboard = ({}) => {
                 >
                   Close
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  {/* Understood */}
-                  Submit
-                </button>
+
+                {modalMode === MODAL_OPTIONS_CONSTANTS.ADD && (
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                  >
+                    Submit
+                  </button>
+                )}
               </div>
             </div>
           </div>

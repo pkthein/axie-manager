@@ -26,12 +26,54 @@ app.use((req, res, next) => {
 const apiURL = ['https://game-api.skymavis.com/game-api/clients/', '/items/1']
 
 const roninAddress = [
-  { add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5', user: 'pkt', rate: 1, start: 206, total: 0 },
-  { add: '0x684bcca125640a5aeaa82d4710987e0591be1434', user: 'jk', rate: 1, start: 267, total: 0 },
-  { add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c', user: 'pl', rate: 0.5, start: 177, total: 0 },
-  { add: '0xe2be035e84050275439592b1da5f4909f2c89854', user: 'jkb', rate: 0.5, start: 156, total: 0 },
-  { add: '0xe62f97068f587cae939b65865d22fda9d8a68d9f', user: 'pls', rate: 0.5, start: 990, total: 0 },
-  { add: '0x6a8f0e45373da828468deb009e35beb26ee005fa', user: 'mpt', rate: 0.5, start: 11, total: 0 },
+  {
+    add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5',
+    user: 'pkt',
+    rate: 1,
+    start: 548,
+    total: 0,
+    earnings: [548],
+  },
+  {
+    add: '0x684bcca125640a5aeaa82d4710987e0591be1434',
+    user: 'jk',
+    rate: 1,
+    start: 742,
+    total: 0,
+    earnings: [742],
+  },
+  {
+    add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c',
+    user: 'pl',
+    rate: 0.5,
+    start: 462,
+    total: 0,
+    earnings: [462],
+  },
+  {
+    add: '0xe2be035e84050275439592b1da5f4909f2c89854',
+    user: 'jkb',
+    rate: 0.5,
+    start: 440,
+    total: 0,
+    earnings: [440],
+  },
+  {
+    add: '0xe62f97068f587cae939b65865d22fda9d8a68d9f',
+    user: 'pls',
+    rate: 0.5,
+    start: 1215,
+    total: 0,
+    earnings: [1215],
+  },
+  {
+    add: '0x6a8f0e45373da828468deb009e35beb26ee005fa',
+    user: 'mpt',
+    rate: 0.5,
+    start: 161,
+    total: 0,
+    earnings: [161],
+  },
 ]
 
 const data = {}
@@ -50,12 +92,40 @@ const getAddresses = async () => {
   
       res.forEach((r, i) => {
         const { data } = r
-        roninAddress[i].total = data.total 
+        roninAddress[i].total = data.total
         roninAddress[i].start = data.total
+
+        roninAddress[i].earnings.push(data.total)
+
+        if (roninAddress[i].earnings.length > 7) {
+          roninAddress[i].earnings.shift()
+        }
       })
+
+      data.wallets = [ ...roninAddress ]
     }
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+const getWalletData = async () => {
+  try {
+    const p = roninAddress.map(address => {
+      return axios.get(`${apiURL[0] + address.add + apiURL[1]}`)
+    })
+
+    const res = await Promise.all(p)
+    let acc = 0
+
+    res.forEach((r, i) => {
+      const { data } = r
+      roninAddress[i].total = data.total 
+      acc += data.total * roninAddress[i].rate
+    })
 
     data.wallets = [ ...roninAddress ]
+    data.managerTotal = acc
   } catch (e) {
     console.log(e)
   }
@@ -65,10 +135,43 @@ getAddresses()
 // call every 5 mins
 setInterval(getAddresses, 5 * 60 * 1000)
 
+// not in use right now
 app.get('/api/daily', async (req, res, next) => {
   try {
     res.data = { data }
-    handle200Response(req, res);
+    handle200Response(req, res)
+  } catch (error) {
+    console.log("ERRORED /api/daily", error);
+    return res.status(400).send({
+      ok: false,
+      error: {
+        reason: "Bad Request", code: 400
+      }
+    });
+  }
+});
+
+app.get('/api/daily/fetch', async (req, res, next) => {
+  try {
+    await getWalletData()
+    res.data = { data }
+    handle200Response(req, res)
+  } catch (error) {
+    console.log("ERRORED /api/notes/all", error);
+    return res.status(400).send({
+      ok: false,
+      error: {
+        reason: "Bad Request", code: 400
+      }
+    });
+  }
+});
+
+// TODO: when the user cashed out
+app.get('/api/daily/reset', async (req, res, next) => {
+  try {
+    res.data = { data }
+    handle200Response(req, res)
   } catch (error) {
     console.log("ERRORED /api/notes/all", error);
     return res.status(400).send({
@@ -92,7 +195,6 @@ app.all('*', (req, res, next) => {
     });
   }
 });
-
 
 const handle200Response = (req, res) => {
   res.status(res.statusCode || 200).send({ ok: true, response: res.data });
