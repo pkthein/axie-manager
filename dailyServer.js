@@ -27,6 +27,14 @@ const apiURL = ['https://game-api.skymavis.com/game-api/clients/', '/items/1']
 
 const roninAddress = [
   {
+    add: '0x684bcca125640a5aeaa82d4710987e0591be1434',
+    user: 'jk',
+    rate: 1,
+    start: 1390,
+    total: 0,
+    earnings: [742, 928, 1156, 1390],
+  },
+  {
     add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5',
     user: 'pkt',
     rate: 1,
@@ -35,12 +43,12 @@ const roninAddress = [
     earnings: [548, 680, 842, 1001],
   },
   {
-    add: '0x684bcca125640a5aeaa82d4710987e0591be1434',
-    user: 'jk',
-    rate: 1,
-    start: 1390,
+    add: '0x6a8f0e45373da828468deb009e35beb26ee005fa',
+    user: 'mpt',
+    rate: 0.75,
+    start: 387,
     total: 0,
-    earnings: [742, 928, 1156, 1390],
+    earnings: [161, 236, 311, 387],
   },
   {
     add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c',
@@ -65,14 +73,6 @@ const roninAddress = [
     start: 1478,
     total: 0,
     earnings: [1215, 1290, 1379, 1478],
-  },
-  {
-    add: '0x6a8f0e45373da828468deb009e35beb26ee005fa',
-    user: 'mpt',
-    rate: 0.5,
-    start: 387,
-    total: 0,
-    earnings: [161, 236, 311, 387],
   },
   {
     add: '0x6bf47dd0c5f59101ab823c5d587ffb8580776539',
