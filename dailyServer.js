@@ -45,7 +45,7 @@ const roninAddress = [
   {
     add: '0x6a8f0e45373da828468deb009e35beb26ee005fa',
     user: 'mpt',
-    rate: 0.75,
+    rate: 0.5,
     start: 387,
     total: 0,
     earnings: [161, 236, 311, 387],
