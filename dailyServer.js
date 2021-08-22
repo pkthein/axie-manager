@@ -82,14 +82,14 @@ const roninAddress = [
     total: 0,
     earnings: [95, 170, 245, 320, 395, 470, 545],
   },
-  // {
-  //   add: '0x6bf47dd0c5f59101ab823c5d587ffb8580776539',
-  //   user: 'plc2',
-  //   rate: 0.5,
-  //   start: 0,
-  //   total: 0,
-  //   earnings: [],
-  // },
+  {
+    add: '0xc9237a257036f6f525b68718bec269bb85312843',
+    user: 'plc2',
+    rate: 0.5,
+    start: 0,
+    total: 0,
+    earnings: [],
+  },
 ]
 
 const data = {}
