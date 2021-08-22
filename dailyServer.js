@@ -32,7 +32,7 @@ const roninAddress = [
     rate: 1,
     start: 1390,
     total: 0,
-    earnings: [742, 928, 1156, 1390],
+    earnings: [1795, 1985, 2204, 2397, 2652, 2854, 3064],
   },
   {
     add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5',
@@ -40,7 +40,7 @@ const roninAddress = [
     rate: 1,
     start: 1001,
     total: 0,
-    earnings: [548, 680, 842, 1001],
+    earnings: [1326, 1458, 1650, 1779, 1902, 2139, 2298],
   },
   {
     add: '0x6a8f0e45373da828468deb009e35beb26ee005fa',
@@ -48,7 +48,7 @@ const roninAddress = [
     rate: 0.5,
     start: 387,
     total: 0,
-    earnings: [161, 236, 311, 387],
+    earnings: [562, 667, 757, 848, 941, 1028, 1112],
   },
   {
     add: '0x24cc2be5ae3d3e1286b939e7bfda1a5bd34dc82c',
@@ -56,7 +56,7 @@ const roninAddress = [
     rate: 0.5,
     start: 850,
     total: 0,
-    earnings: [462, 587, 722, 850],
+    earnings: [1082, 1199, 1287, 1405, 1543, 1690, 1813],
   },
   {
     add: '0xe2be035e84050275439592b1da5f4909f2c89854',
@@ -64,7 +64,7 @@ const roninAddress = [
     rate: 0.5,
     start: 764,
     total: 0,
-    earnings: [440, 557, 650, 764],
+    earnings: [1004, 1327, 1444, 1555, 1666, 1780, 1891],
   },
   {
     add: '0xe62f97068f587cae939b65865d22fda9d8a68d9f',
@@ -72,7 +72,7 @@ const roninAddress = [
     rate: 0.5,
     start: 1478,
     total: 0,
-    earnings: [1215, 1290, 1379, 1478],
+    earnings: [1645, 1732, 1826, 1933, 2044, 2137, 2222],
   },
   {
     add: '0x6bf47dd0c5f59101ab823c5d587ffb8580776539',
@@ -80,8 +80,16 @@ const roninAddress = [
     rate: 0.5,
     start: 0,
     total: 0,
-    earnings: [],
+    earnings: [95, 170, 245, 320, 395, 470, 545],
   },
+  // {
+  //   add: '0x6bf47dd0c5f59101ab823c5d587ffb8580776539',
+  //   user: 'plc2',
+  //   rate: 0.5,
+  //   start: 0,
+  //   total: 0,
+  //   earnings: [],
+  // },
 ]
 
 const data = {}
@@ -105,7 +113,8 @@ const getAddresses = async () => {
 
         roninAddress[i].earnings.push(data.total)
 
-        if (roninAddress[i].earnings.length > 7) {
+        // set the list to 2 weeks
+        if (roninAddress[i].earnings.length > 14) {
           roninAddress[i].earnings.shift()
         }
       })

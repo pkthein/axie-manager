@@ -1,39 +1,51 @@
 import React, { useState, useEffect, useRef } from 'react'
-
 // import { useDispatch } from 'react-redux'
+import { useLocation } from "react-router-dom"
+
 import axios from 'axios'
+import { Line } from 'react-chartjs-2'
+
+import {
+  BASE_UNIT_OPTIONS_CONSTANTS,
+  MODAL_OPTIONS_CONSTANTS,
+  USERS,
+} from './Constants'
+
+import WalletInformation from 'shared/model/WalletInformation'
 
 import { StyledTableRow } from './StyledComponents'
 
-const BASE_UNIT_OPTIONS_CONSTANTS = {
-  SLP: 'slp',
-  USD: 'usd',
-  ETH: 'eth',
-}
+// const state = {
+//   labels: ['January', 'February', 'March',
+//            'April', 'May'],
+//   datasets: [
+//     {
+//       label: 'total',
+//       fill: true,
+//       lineTension: 0.5,
+//       backgroundColor: 'rgba(75, 192, 192, .3)',
+//       borderColor: 'rgba(0, 0, 0, 1)',
+//       borderWidth: 2,
+//       data: [65, 59, 80, 81, 56]
+//     },
+//     // {
+//     //   label: 'diff',
+//     //   fill: true,
+//     //   lineTension: 0.5,
+//     //   backgroundColor: 'rgba(32, 192, 5, .3)',
+//     //   borderColor: 'rgba(0, 0, 0, 1)',
+//     //   borderWidth: 2,
+//     //   data: [10, 15, 80, 81, 56]
+//     // },
+//   ]
+// }
 
-const MODAL_OPTIONS_CONSTANTS = {
-  ADD: 'add',
-  DETAILS: 'DETAILS',
-}
-
-const WalletInformation = ({
-  add = '',
-  user = '',
-  rate = 0,
-  total = 0,
-  start = 0,
-  earnings = []
-}) => ({
-  add: String(add),
-  user: String(user),
-  rate: Number(rate),
-  total: Number(total),
-  start: Number(start),
-  earnings: earnings.map(earning => Number(earning))
-})
-
-const Dashboard = ({}) => {
+const Dashboard = () => {
   // const dispatch = useDispatch()
+  const { search } = useLocation()
+
+  const queries = new URLSearchParams(search)
+  const user = queries.get('user')
 
   const [totalSlp, setTotalSlp] = useState(0)
   const [finalResult, setFinalResult] = useState([])
@@ -48,13 +60,39 @@ const Dashboard = ({}) => {
 
   const modalRef = useRef()
   
-  useEffect(async () => {
+  useEffect(() => {
+    fetchData()
+
+    return () => {}
+  }, [])
+
+  const fetchData = async () => {
     try {
+      if (user === 'mock') {
+        setFinalResult([
+          {
+            add: '0xa06775d35109ebb35ad97f79984bc338f9eb5cc5',
+            user: 'mock',
+            rate: 1,
+            start: 1001,
+            total: 1076,
+            earnings: [548, 680, 842, 1001],
+          },
+        ])
+
+        return
+      }
+
       const apiData = await (await axios.get('/api/daily/fetch')).data.response.data
       const { wallets, managerTotal } = apiData
 
-      setTotalSlp(managerTotal)
-      setFinalResult([ ...wallets ])
+      if (user === 'manager') {
+        setTotalSlp(managerTotal)
+        setFinalResult([ ...wallets ])
+      } else if (USERS.includes(user)) {
+        const scholarWallet = wallets.filter(wallet => wallet.user === user)
+        setFinalResult([ ...scholarWallet ])
+      }
 
       const coinPrices = await axios.get('/api/coins/all')
 
@@ -62,14 +100,9 @@ const Dashboard = ({}) => {
     } catch (e) {
       console.error(e)
     }
-
-    return () => {}
-  }, [])
-
-  console.log('testingx >>', { modalMode, rowInformation })
+  }
 
   const renderRowInformationModal = (indexOfInterest) => {
-    console.log('testingx >> wtf?')
     setModalMode(MODAL_OPTIONS_CONSTANTS.DETAILS)
     setRowInformation(WalletInformation(finalResult[indexOfInterest]))
     modalRef.current.click()
@@ -77,6 +110,39 @@ const Dashboard = ({}) => {
 
   const renderAddModal = () => {
     setModalMode(MODAL_OPTIONS_CONSTANTS.ADD)
+  }
+
+  const computeDateForLabels = lengthOfData => {
+    if (!lengthOfData) return []
+
+    const today = new Date()
+    let dateLabels = []
+    let dateToInsert = ''
+
+    for (let i = 0; i <= lengthOfData; i++) {
+      dateToInsert = new Date(today - (lengthOfData - i) * 24 * 3600 * 1000).toUTCString()
+      dateToInsert = dateToInsert.split(' ')
+      dateToInsert = `${dateToInsert[2]} ${dateToInsert[1]}` 
+
+      dateLabels.push(dateToInsert)
+    }
+
+    return dateLabels
+  }
+
+  if (user !== 'manager' && !USERS.includes(user) && user !== 'mock') {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          height: '70vh',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        403: FORBIDDEN
+      </div>
+    ) 
   }
 
   return (
@@ -92,34 +158,74 @@ const Dashboard = ({}) => {
           marginLeft: 8,
           marginRight: 8,
           padding: 8,
-          minWidth: 431,
+          minWidth: 373,
         }}
       >
         <h4 className="mt-2">
           Dashboard
         </h4>
-        <button
-          type="button"
-          className="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#staticBackdrop"
-          style={{ borderRadius: '50%' }}
-          onClick={renderAddModal}
-        >
-          +
-        </button>
-        <br />
+        {user === 'manager' && (
+          <React.Fragment>
+            <button
+              type="button"
+              className="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+              style={{ borderRadius: '50%' }}
+              onClick={renderAddModal}
+            >
+              +
+            </button>
+            <br />
+          </React.Fragment>
+        )}
+
+        {finalResult.length === 1 && (
+          <Line
+            data={{
+              labels: computeDateForLabels(finalResult[0].earnings.length) || [],
+              datasets: [
+                {
+                  label: 'total',
+                  fill: true,
+                  lineTension: 0.5,
+                  backgroundColor: 'rgba(75, 192, 192, .3)',
+                  borderColor: 'rgba(0, 0, 0, 1)',
+                  borderWidth: 2,
+                  data: [ ...finalResult[0].earnings, finalResult[0].total ] || [],
+                }
+              ]
+            }}
+            options={{
+              plugins: {
+                title:{
+                  display: true,
+                  text: 'SLP earnings for past 14 days',
+                  fontSize: 20
+                },
+                legend:{
+                  display: true,
+                  // position: 'right'
+                },
+              },
+            }}
+          />
+        )}
 
         <div><strong>ETH:</strong> ${ccToUSD.eth}</div>
         <div><strong>SLP:</strong> ${ccToUSD.slp}</div>
-        <br />
 
-        <div>
-          <strong>Total (manager):</strong>
-          &nbsp;{totalSlp} slp |
-          &nbsp;${Math.round(totalSlp * ccToUSD.slp * 100) / 100} |
-          &nbsp;{Math.round(totalSlp * ccToUSD.slp / ccToUSD.eth * 100000) / 100000} eth
-        </div>
+        {user === 'manager' && (
+          <React.Fragment>
+            <br />
+            <div>
+              <strong>Total (manager):</strong>
+              &nbsp;{totalSlp} slp |
+              &nbsp;${Math.round(totalSlp * ccToUSD.slp * 100) / 100} |
+              &nbsp;{Math.round(totalSlp * ccToUSD.slp / ccToUSD.eth * 100000) / 100000} eth
+            </div>
+          </React.Fragment>
+        )}
 
         <div className="btn-group" role="group" aria-label="Radio toggle for basic unit of table">
           <input
@@ -172,7 +278,7 @@ const Dashboard = ({}) => {
             onClick={() => {
               setBaseUnit(BASE_UNIT_OPTIONS_CONSTANTS.ETH)
               setBaseUnitNumeric(ccToUSD.slp / ccToUSD.eth)
-              setBaseUnitRounder(10000)
+              setBaseUnitRounder(1000)
             }}
           />
           <label
@@ -220,16 +326,20 @@ const Dashboard = ({}) => {
               <tr>
                 <td colSpan={100} style={{ textAlign: 'center' }}>
                   No Data
-                  <br/>
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#staticBackdrop"
-                    onClick={renderAddModal}
-                  >
-                    Add scholar
-                  </button>
+                  {user === 'manager' && (
+                    <React.Fragment>
+                      <br/>
+                      <button
+                        type="button"
+                        className="btn btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop"
+                        onClick={renderAddModal}
+                      >
+                        Add scholar
+                      </button>
+                    </React.Fragment>
+                  )}
                 </td>
               </tr>
             )}
@@ -262,7 +372,6 @@ const Dashboard = ({}) => {
                   className="modal-title"
                   id="staticBackdropLabel"
                 >
-                  {console.log('testingx >>', { modalMode })}
                   {modalMode === MODAL_OPTIONS_CONSTANTS.ADD && (
                     <React.Fragment>Add scholar</React.Fragment>
                   )}
@@ -285,9 +394,38 @@ const Dashboard = ({}) => {
 
                 {modalMode === MODAL_OPTIONS_CONSTANTS.DETAILS && (
                   <React.Fragment>
+                    <Line
+                      data={{
+                        labels: computeDateForLabels(rowInformation?.earnings.length) || [],
+                        datasets: [
+                          {
+                            label: 'total',
+                            fill: true,
+                            lineTension: 0.5,
+                            backgroundColor: 'rgba(75, 192, 192, .3)',
+                            borderColor: 'rgba(0, 0, 0, 1)',
+                            borderWidth: 2,
+                            data: [ ...rowInformation?.earnings, rowInformation?.total ] || [],
+                          }
+                        ]
+                      }}
+                      options={{
+                        plugins: {
+                          title:{
+                            display: true,
+                            text: 'SLP earnings for past 14 days',
+                            fontSize: 20
+                          },
+                          legend:{
+                            display: true,
+                            // position: 'right'
+                          },
+                        },
+                      }}
+                    />
+
                     <ul>
-                      <li>User: {rowInformation.user}</li>
-                      <li>Rate: {rowInformation.rate}</li>
+                      {/* <li>Rate: {rowInformation.rate}</li> */}
                       <li>Total: {rowInformation.total}</li>
                       <li>
                         History: [
